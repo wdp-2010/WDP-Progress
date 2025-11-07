@@ -1,0 +1,514 @@
+# ╔════════════════════════════════════════════════════════════════════════╗
+# ║                    WDP Progress System Configuration                   ║
+# ║                                                                         ║
+# ║  This plugin tracks player progress across multiple dimensions to      ║
+# ║  generate a comprehensive score from 1-100 representing their overall  ║
+# ║  advancement in the game.                                              ║
+# ╚════════════════════════════════════════════════════════════════════════╝
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DATABASE SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════
+database:
+  # Database type: SQLITE or MYSQL
+  type: SQLITE
+  
+  # SQLite settings (used when type is SQLITE)
+  sqlite:
+    file: "progress_data.db"
+  
+  # MySQL settings (used when type is MYSQL)
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "wdp_progress"
+    username: "root"
+    password: "password"
+    
+  # Connection pool settings
+  pool:
+    maximum-pool-size: 10
+    minimum-idle: 2
+    connection-timeout: 30000
+    idle-timeout: 600000
+    max-lifetime: 1800000
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GENERAL SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════
+general:
+  # Auto-save interval in seconds (how often to save player data)
+  auto-save-interval: 300
+  
+  # Progress recalculation interval in seconds (how often to update progress for online players)
+  recalculation-interval: 60
+  
+  # Enable debug logging
+  debug: false
+  
+  # Minimum progress value (never goes below this)
+  min-progress: 1
+  
+  # Maximum progress value (never goes above this)
+  max-progress: 100
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PROGRESS CALCULATION WEIGHTS
+# ═══════════════════════════════════════════════════════════════════════════
+# Each category contributes to the final progress score based on its weight.
+# The sum of all category weights should equal 100 for balanced scoring.
+# Adjust these values to emphasize certain aspects of progression.
+# ═══════════════════════════════════════════════════════════════════════════
+
+weights:
+  # Minecraft advancements (story progression, achievements)
+  # Weight: 25% of total progress
+  advancements: 25.0
+  
+  # Player experience and levels
+  # Weight: 15% of total progress
+  experience: 15.0
+  
+  # Equipment quality (armor, tools, weapons, enchantments)
+  # Weight: 20% of total progress
+  equipment: 20.0
+  
+  # Economy/money (coins, balance)
+  # Weight: 15% of total progress
+  economy: 15.0
+  
+  # Player statistics (kills, mining, exploration)
+  # Weight: 15% of total progress
+  statistics: 15.0
+  
+  # Custom achievements and milestones
+  # Weight: 10% of total progress
+  achievements: 10.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ADVANCEMENT TRACKING
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how advancements contribute to progress.
+# Each advancement category has a weight representing its importance.
+# ═══════════════════════════════════════════════════════════════════════════
+
+advancements:
+  # Enable advancement tracking
+  enabled: true
+  
+  # Advancement category weights (relative importance)
+  # These determine how much each category contributes to the advancement score
+  category-weights:
+    # Main story progression (most important)
+    story: 35.0
+    
+    # Nether exploration and progression
+    nether: 20.0
+    
+    # End dimension and dragon fight
+    end: 25.0
+    
+    # Adventure and exploration
+    adventure: 10.0
+    
+    # Farming and animal husbandry
+    husbandry: 5.0
+    
+    # Other/miscellaneous advancements
+    other: 5.0
+  
+  # Key milestone advancements (bonus points for critical achievements)
+  milestones:
+    "minecraft:story/mine_stone": 2.0
+    "minecraft:story/upgrade_tools": 3.0
+    "minecraft:story/smelt_iron": 4.0
+    "minecraft:story/obtain_armor": 5.0
+    "minecraft:story/mine_diamond": 8.0
+    "minecraft:story/enter_the_nether": 10.0
+    "minecraft:nether/obtain_blaze_rod": 8.0
+    "minecraft:story/follow_ender_eye": 12.0
+    "minecraft:story/enter_the_end": 15.0
+    "minecraft:end/kill_dragon": 20.0
+    "minecraft:nether/get_wither_skull": 10.0
+    "minecraft:nether/summon_wither": 12.0
+    "minecraft:adventure/kill_mob_near_sculk_catalyst": 8.0
+    "minecraft:end/elytra": 15.0
+    "minecraft:end/levitate": 5.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EXPERIENCE TRACKING
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how player experience levels contribute to progress.
+# Uses a logarithmic scale to prevent excessive grinding.
+# ═══════════════════════════════════════════════════════════════════════════
+
+experience:
+  # Enable experience tracking
+  enabled: true
+  
+  # Maximum level considered for full score (100% of experience weight)
+  # Levels beyond this provide diminishing returns
+  max-level: 100
+  
+  # Levels that represent progression milestones
+  milestone-levels:
+    10: 1.0   # Early game
+    20: 1.5   # Mid-early
+    30: 2.0   # Mid game
+    40: 2.5   # Mid-late
+    50: 3.0   # Late game
+    75: 4.0   # Advanced
+    100: 5.0  # Master
+  
+  # Diminishing returns factor (higher = more aggressive diminishing returns)
+  # Formula uses: log(level + 1) / log(max_level + 1)
+  diminishing-returns: true
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EQUIPMENT EVALUATION
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how equipment quality is assessed.
+# Considers material tier, enchantments, durability, and overall value.
+# ═══════════════════════════════════════════════════════════════════════════
+
+equipment:
+  # Enable equipment tracking
+  enabled: true
+  
+  # Include ender chest contents in evaluation
+  include-ender-chest: true
+  
+  # Include player inventory in evaluation
+  include-inventory: true
+  
+  # Include armor slots in evaluation
+  include-armor: true
+  
+  # Weight distribution within equipment category
+  component-weights:
+    armor: 35.0        # Armor pieces
+    tools: 30.0        # Pickaxe, axe, shovel, hoe
+    weapons: 25.0      # Sword, bow, crossbow, trident
+    special: 10.0      # Elytra, shield, special items
+  
+  # Material tier scoring (base points per item)
+  material-scores:
+    # Armor materials
+    LEATHER: 1.0
+    CHAINMAIL: 2.0
+    IRON: 3.0
+    GOLDEN: 2.5
+    DIAMOND: 8.0
+    NETHERITE: 10.0
+    
+    # Tool/Weapon materials
+    WOOD: 0.5
+    STONE: 1.0
+    GOLD: 1.5
+    IRON: 3.0
+    DIAMOND: 8.0
+    NETHERITE: 10.0
+  
+  # Enchantment scoring
+  enchantments:
+    # Base multiplier per enchantment level
+    base-multiplier: 0.15
+    
+    # Highly valuable enchantments (additional bonus multiplier)
+    high-value:
+      MENDING: 1.5
+      UNBREAKING: 1.2
+      PROTECTION: 1.3
+      SHARPNESS: 1.2
+      EFFICIENCY: 1.1
+      FORTUNE: 1.4
+      SILK_TOUCH: 1.3
+      LOOTING: 1.3
+      THORNS: 0.8
+      BLAST_PROTECTION: 0.9
+      FIRE_PROTECTION: 0.9
+      PROJECTILE_PROTECTION: 0.9
+      FEATHER_FALLING: 1.1
+      DEPTH_STRIDER: 0.8
+      FROST_WALKER: 0.7
+      SOUL_SPEED: 0.9
+      SWIFT_SNEAK: 0.9
+      RESPIRATION: 0.7
+      AQUA_AFFINITY: 0.6
+      SMITE: 0.8
+      BANE_OF_ARTHROPODS: 0.6
+      KNOCKBACK: 0.5
+      FIRE_ASPECT: 0.8
+      SWEEPING_EDGE: 0.7
+      POWER: 1.1
+      PUNCH: 0.6
+      FLAME: 0.8
+      INFINITY: 1.0
+      LUCK_OF_THE_SEA: 0.9
+      LURE: 0.5
+      LOYALTY: 0.8
+      IMPALING: 0.9
+      RIPTIDE: 1.0
+      CHANNELING: 0.9
+      MULTISHOT: 0.8
+      QUICK_CHARGE: 0.9
+      PIERCING: 0.9
+  
+  # Durability impact on scoring
+  durability:
+    # Minimum durability percentage to count (below this, item value reduced)
+    minimum-threshold: 20
+    
+    # Penalty multiplier for low durability items
+    low-durability-penalty: 0.5
+  
+  # Special items with fixed scores
+  special-items:
+    ELYTRA: 15.0
+    TOTEM_OF_UNDYING: 8.0
+    TRIDENT: 10.0
+    NETHERITE_UPGRADE_SMITHING_TEMPLATE: 5.0
+    ENCHANTED_GOLDEN_APPLE: 3.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ECONOMY INTEGRATION
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how player money/balance contributes to progress.
+# Uses logarithmic scaling to prevent excessive farming.
+# Requires Vault and an economy plugin.
+# ═══════════════════════════════════════════════════════════════════════════
+
+economy:
+  # Enable economy tracking (requires Vault)
+  enabled: true
+  
+  # Money thresholds for progression milestones
+  # Uses logarithmic scale: score = log10(balance) / log10(max-balance) * 100
+  thresholds:
+    # Starting phase (0-1000)
+    early-game: 1000.0
+    
+    # Established phase (1000-10000)
+    mid-game: 10000.0
+    
+    # Wealthy phase (10000-100000)
+    late-game: 100000.0
+    
+    # Maximum balance for full score (100% of economy weight)
+    max-balance: 1000000.0
+  
+  # Milestone bonuses for reaching specific balance amounts
+  milestones:
+    100: 0.5
+    500: 1.0
+    1000: 1.5
+    5000: 2.0
+    10000: 3.0
+    25000: 4.0
+    50000: 5.0
+    100000: 7.0
+    500000: 10.0
+    1000000: 15.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# STATISTICS TRACKING
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how player statistics contribute to progress.
+# Tracks various gameplay metrics with diminishing returns.
+# ═══════════════════════════════════════════════════════════════════════════
+
+statistics:
+  # Enable statistics tracking
+  enabled: true
+  
+  # Weight distribution within statistics category
+  stat-weights:
+    mob-kills: 30.0      # Combat proficiency
+    blocks-mined: 25.0   # Mining/gathering
+    distance-traveled: 15.0  # Exploration
+    playtime: 10.0       # Time invested
+    deaths: -5.0         # Penalty for deaths
+    misc: 25.0           # Other statistics
+  
+  # Mob kill tracking
+  mob-kills:
+    # Total kills needed for maximum score in this subcategory
+    max-kills: 10000
+    
+    # Special mob kill bonuses (additional points per kill)
+    special-mobs:
+      ENDER_DRAGON: 50.0
+      WITHER: 40.0
+      ELDER_GUARDIAN: 15.0
+      WARDEN: 30.0
+      PIGLIN_BRUTE: 5.0
+      RAVAGER: 8.0
+      EVOKER: 10.0
+      VEX: 3.0
+      PHANTOM: 4.0
+      SHULKER: 6.0
+  
+  # Block mining tracking
+  blocks-mined:
+    # Total blocks needed for maximum score
+    max-blocks: 100000
+    
+    # Valuable block bonuses (additional points per block)
+    valuable-blocks:
+      DIAMOND_ORE: 5.0
+      DEEPSLATE_DIAMOND_ORE: 5.0
+      ANCIENT_DEBRIS: 10.0
+      EMERALD_ORE: 8.0
+      DEEPSLATE_EMERALD_ORE: 8.0
+      NETHER_QUARTZ_ORE: 1.0
+      GOLD_ORE: 2.0
+      DEEPSLATE_GOLD_ORE: 2.0
+      NETHER_GOLD_ORE: 1.5
+      OBSIDIAN: 2.0
+  
+  # Distance traveled tracking (in blocks)
+  distance-traveled:
+    # Maximum distance for full score
+    max-distance: 1000000
+    
+    # Distance type weights
+    types:
+      walk: 1.0
+      sprint: 1.0
+      crouch: 0.5
+      swim: 1.2
+      fly: 0.8
+      boat: 1.1
+      minecart: 0.9
+      horse: 1.0
+      pig: 0.7
+      elytra: 1.5
+  
+  # Playtime tracking (in hours)
+  playtime:
+    # Maximum playtime for full score
+    max-hours: 500
+    
+    # Use diminishing returns for playtime
+    diminishing-returns: true
+  
+  # Death penalty
+  deaths:
+    # Points lost per death
+    penalty-per-death: 0.5
+    
+    # Maximum penalty from deaths
+    max-penalty: 50.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CUSTOM ACHIEVEMENTS
+# ═══════════════════════════════════════════════════════════════════════════
+# Server-specific achievements that contribute to progress.
+# These can be triggered by other plugins via the API.
+# ═══════════════════════════════════════════════════════════════════════════
+
+achievements:
+  # Enable custom achievements
+  enabled: true
+  
+  # Define custom achievements
+  # Format: achievement-id: points
+  custom-achievements:
+    first_join: 1.0
+    first_death: 0.5
+    first_pvp_kill: 3.0
+    join_faction: 5.0
+    complete_tutorial: 5.0
+    first_trade: 2.0
+    master_builder: 10.0
+    legendary_fighter: 15.0
+    master_miner: 10.0
+    master_farmer: 8.0
+    master_enchanter: 12.0
+    master_brewer: 8.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DEATH PENALTIES
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how death affects progress.
+# Progress can decrease on death based on what is lost.
+# ═══════════════════════════════════════════════════════════════════════════
+
+death-penalty:
+  # Enable death penalties
+  enabled: true
+  
+  # Percentage of experience lost on death affects progress
+  experience-loss-impact: 0.5
+  
+  # Temporary progress reduction on death (recoverable)
+  temporary-penalty:
+    enabled: true
+    amount: 2.0        # Progress points lost
+    recovery-time: 3600 # Seconds until penalty is removed (1 hour)
+  
+  # Permanent penalty for equipped item loss
+  item-loss-penalty:
+    enabled: true
+    # Percentage of lost items' value subtracted from progress
+    loss-multiplier: 0.3
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DISPLAY SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════
+# Configure how progress is displayed to players.
+# ═══════════════════════════════════════════════════════════════════════════
+
+display:
+  # Progress bar style
+  progress-bar:
+    length: 20           # Number of characters in bar
+    filled-char: "█"
+    empty-char: "░"
+    color-gradient:
+      0-20: "&c"        # Red (beginner)
+      21-40: "&6"       # Gold (novice)
+      41-60: "&e"       # Yellow (intermediate)
+      61-80: "&a"       # Green (advanced)
+      81-100: "&b"      # Aqua (master)
+  
+  # Show detailed breakdown in /progress command
+  show-breakdown: true
+  
+  # Show tips for improving progress
+  show-tips: true
+  
+  # Decimal places to show
+  decimal-places: 1
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PERFORMANCE SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════
+
+performance:
+  # Cache player data in memory (recommended)
+  enable-caching: true
+  
+  # Cache expiration time in seconds
+  cache-expiration: 600
+  
+  # Async calculation (perform heavy calculations asynchronously)
+  async-calculation: true
+  
+  # Batch save operations
+  batch-saves: true
+  batch-size: 50
+
+# ═══════════════════════════════════════════════════════════════════════════
+# API SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════
+
+api:
+  # Allow external plugins to modify progress
+  allow-external-modifications: true
+  
+  # Fire events when progress changes
+  fire-progress-events: true
+  
+  # Minimum progress change to fire event (prevents spam)
+  event-threshold: 0.5

@@ -1,0 +1,12 @@
+# Ignore target
+/target/
+
+# IDE files
+/.idea/
+*.iml
+
+# Logs
+*.log
+
+# OS files
+.DS_Store

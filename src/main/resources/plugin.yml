@@ -1,0 +1,65 @@
+name: WDPProgress
+version: ${project.version}
+main: com.wdp.progress.WDPProgressPlugin
+api-version: 1.21
+author: WDP Development Team
+description: Advanced player progress tracking system
+website: https://wdpserver.com
+softdepend: [Vault]
+
+commands:
+  progress:
+    description: View your progress or another player's progress
+    usage: /progress [player|debug <player>]
+    permission: wdp.progress.view
+    aliases: [prog, wdpprogress]
+  
+  progressadmin:
+    description: Admin commands for progress management
+    usage: /progressadmin <reload|recalculate|set|reset|debug> [player] [value]
+    permission: wdp.progress.admin
+    aliases: [progadmin, padmin]
+
+permissions:
+  wdp.progress.view:
+    description: View your own progress
+    default: true
+  
+  wdp.progress.view.others:
+    description: View other players' progress
+    default: op
+  
+  wdp.progress.debug:
+    description: View detailed debug information about progress calculation
+    default: op
+  
+  wdp.progress.admin:
+    description: Access to all admin commands
+    default: op
+    children:
+      wdp.progress.admin.reload: true
+      wdp.progress.admin.recalculate: true
+      wdp.progress.admin.set: true
+      wdp.progress.admin.reset: true
+      wdp.progress.admin.debug: true
+      wdp.progress.debug: true
+  
+  wdp.progress.admin.reload:
+    description: Reload plugin configuration
+    default: op
+  
+  wdp.progress.admin.recalculate:
+    description: Force recalculation of player progress
+    default: op
+  
+  wdp.progress.admin.set:
+    description: Manually set player progress
+    default: op
+  
+  wdp.progress.admin.reset:
+    description: Reset player progress data
+    default: op
+  
+  wdp.progress.admin.debug:
+    description: View debug information about progress calculation (admin command)
+    default: op
