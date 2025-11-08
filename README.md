@@ -2,7 +2,7 @@
 
 **Advanced Player Progress Tracking for Minecraft Servers**
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/wdpserver/wdp-progress)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/wdpserver/wdp-progress)
 [![Minecraft](https://img.shields.io/badge/minecraft-1.21.6-green.svg)](https://www.spigotmc.org/)
 [![Java](https://img.shields.io/badge/java-21+-orange.svg)](https://adoptium.net/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
@@ -18,21 +18,30 @@ WDP Progress is a sophisticated player progression tracking system that calculat
 - **💾 Dual Database Support**: SQLite for easy setup, MySQL for scalability
 - **🔌 Full API**: Extensive API for other plugins to query and modify progress
 - **⚡ High Performance**: Async calculations, connection pooling, and intelligent caching
-- **✨ Interactive GUI Menu**: Beautiful inventory-based progress viewer with detailed tooltips
+- **✨ Layered Menu System**: Interactive GUI with detailed scrollable sub-menus for each category
+- **📊 30+ Statistics Tracked**: Comprehensive gameplay metrics (kills, mining, distance, etc.)
+- **🎨 Equipment Inspector**: View all items with enchantments, durability, and value calculations
 - **🔧 Debug Command**: Detailed technical breakdown for troubleshooting
 - **📈 Progress History**: Track player progression over time
 - **🏆 Custom Achievements**: Server-specific milestones that boost progress
-- **💀 Death Penalties**: Dynamic penalties that can recover over time
-- **🎨 Simple Explanations**: Each category explained in plain language
+- **💀 Smart Death Penalties**: GravesX integration for fair death tracking based on actual item loss
+- **� Advancement Admin Menu**: OP-only GUI to manage player advancements with filtering and bulk operations
 - **🔧 Highly Configurable**: Almost everything is customizable via config
 
-### What's New in 1.1.0
+### What's New in 1.2.0
 
-- **🎨 Interactive GUI Menu**: Beautiful inventory-based interface with clickable items
-- **🔍 Debug Command**: `/progress debug <player>` for detailed technical breakdown
-- **📝 Simple Language**: Easy-to-understand explanations for all categories
-- **⬆️ Version Update**: Updated to Minecraft 1.21.6 and Java 21
-- **🎯 Enhanced Tab Completion**: Better command suggestions
+- **🎨 Layered Menu System**: Completely redesigned GUI with navigable sub-menus
+  - Click any category to open detailed scrollable view
+  - Statistics menu shows 30+ tracked metrics with values
+  - Equipment menu displays all gear with enchantments and durability
+  - Advancements menu shows all Minecraft advancements with completion status
+  - Economy & Experience menu shows wealth tiers, XP breakdown, and milestones
+  - Death Penalty menu explains penalties and shows active graves
+- **📊 Statistics Integration**: Real-time stats displayed on main menu overview
+- **🔄 Pagination Support**: All sub-menus support scrolling for large datasets (28 items per page)
+- **🎯 Advancement Management**: OP-only menu to toggle, reset, or bulk-grant advancements
+- **⚰️ GravesX Integration**: Smart death tracking based on actual item loss and recovery
+- **� Enhanced Tooltips**: Every item includes helpful "Click to view details" hints
 
 ## 🎮 Progress Scale Explained
 
@@ -135,6 +144,12 @@ death-penalty:
 | `/progress debug` | `wdp.progress.debug` | View technical debug info about your progress |
 | `/progress debug <player>` | `wdp.progress.debug` | Debug another player's progress |
 
+**GUI Navigation:**
+- Click any category icon in the main menu to view detailed information
+- Use **Previous/Next Page** arrows to scroll through large lists
+- Click **Back to Main Menu** to return to the overview
+- Each sub-menu shows up to 28 items per page with automatic pagination
+
 **Aliases:** `/prog`, `/wdpprogress`
 
 ### Admin Commands
@@ -146,6 +161,14 @@ death-penalty:
 | `/progressadmin set <player> <value>` | `wdp.progress.admin.set` | Manually set progress |
 | `/progressadmin reset <player>` | `wdp.progress.admin.reset` | Reset player data |
 | `/progressadmin debug <player>` | `wdp.progress.admin.debug` | View detailed debug info |
+| `/progressadmin advancements <player>` | `wdp.progress.admin` | Open advancement management GUI (OP only) |
+
+**Advancement Admin Menu Features:**
+- Filter advancements by completion status (All/Completed/Uncompleted)
+- Filter by category (Story/Nether/End/Adventure/Husbandry)
+- Toggle individual advancements on/off
+- Bulk operations: Grant All or Reset All (with confirmation)
+- Real-time visual feedback with color-coded icons
 
 **Aliases:** `/progadmin`, `/padmin`
 
@@ -219,7 +242,7 @@ mvn clean package
 mvn clean
 ```
 
-The compiled JAR will be in `target/WDPProgress-1.1.0-SNAPSHOT.jar`
+The compiled JAR will be in `target/WDPProgress-1.2.0-SNAPSHOT.jar`
 
 ## 🗄️ Database
 

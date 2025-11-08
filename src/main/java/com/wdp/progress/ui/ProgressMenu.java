@@ -6,6 +6,7 @@ import com.wdp.progress.progress.ProgressCalculator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,8 +25,45 @@ public class ProgressMenu {
     private final WDPProgressPlugin plugin;
     private final DecimalFormat df = new DecimalFormat("#.#");
     
+    // Detail menus
+    private final AdvancementsDetailMenu advancementsDetailMenu;
+    private final EquipmentDetailMenu equipmentDetailMenu;
+    private final StatisticsDetailMenu statisticsDetailMenu;
+    private final EconomyExperienceDetailMenu economyExperienceDetailMenu;
+    private final DeathPenaltyDetailMenu deathPenaltyDetailMenu;
+    
     public ProgressMenu(WDPProgressPlugin plugin) {
         this.plugin = plugin;
+        
+        // Initialize detail menus
+        this.advancementsDetailMenu = new AdvancementsDetailMenu(plugin, this);
+        this.equipmentDetailMenu = new EquipmentDetailMenu(plugin, this);
+        this.statisticsDetailMenu = new StatisticsDetailMenu(plugin, this);
+        this.economyExperienceDetailMenu = new EconomyExperienceDetailMenu(plugin, this);
+        this.deathPenaltyDetailMenu = new DeathPenaltyDetailMenu(plugin, this);
+    }
+    
+    /**
+     * Get detail menu handlers
+     */
+    public AdvancementsDetailMenu getAdvancementsDetailMenu() {
+        return advancementsDetailMenu;
+    }
+    
+    public EquipmentDetailMenu getEquipmentDetailMenu() {
+        return equipmentDetailMenu;
+    }
+    
+    public StatisticsDetailMenu getStatisticsDetailMenu() {
+        return statisticsDetailMenu;
+    }
+    
+    public EconomyExperienceDetailMenu getEconomyExperienceDetailMenu() {
+        return economyExperienceDetailMenu;
+    }
+    
+    public DeathPenaltyDetailMenu getDeathPenaltyDetailMenu() {
+        return deathPenaltyDetailMenu;
     }
     
     /**
@@ -125,6 +163,8 @@ public class ProgressMenu {
         lore.add(ChatColor.GREEN + "✓ Defeat the Ender Dragon");
         lore.add(ChatColor.GREEN + "✓ Get the Elytra wings");
         lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view detailed advancements!");
+        lore.add("");
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -167,6 +207,8 @@ public class ProgressMenu {
         lore.add("");
         lore.add(ChatColor.GRAY + "Note: Uses diminishing returns");
         lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view XP details!");
+        lore.add("");
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -207,6 +249,8 @@ public class ProgressMenu {
         lore.add(ChatColor.GREEN + "✓ Obtain special items (Elytra, Trident)");
         lore.add(ChatColor.GREEN + "✓ Keep gear repaired (durability matters)");
         lore.add(ChatColor.GREEN + "✓ Get a full armor set (15% bonus)");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view equipment details!");
         lore.add("");
         
         meta.setLore(lore);
@@ -254,6 +298,8 @@ public class ProgressMenu {
         lore.add(ChatColor.GREEN + "✓ Trade valuable resources");
         lore.add(ChatColor.GREEN + "✓ Build and sell services");
         lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view economy & XP!");
+        lore.add("");
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -272,7 +318,7 @@ public class ProgressMenu {
         double weight = plugin.getConfigManager().getCategoryWeight("statistics");
         double contribution = (score * weight) / 100.0;
         
-        meta.setDisplayName(ChatColor.RED + "⚡ Statistics & Activity");
+        meta.setDisplayName(ChatColor.YELLOW + "📊 Statistics & Activity");
         
         List<String> lore = new ArrayList<>();
         lore.add("");
@@ -280,13 +326,15 @@ public class ProgressMenu {
         lore.add(ChatColor.GRAY + "Weight: " + ChatColor.WHITE + weight + "%");
         lore.add(ChatColor.GRAY + "Contribution: " + ChatColor.AQUA + "+" + df.format(contribution) + " points");
         lore.add("");
-        lore.add(ChatColor.YELLOW + "What is this?");
-        lore.add(ChatColor.GRAY + "Tracks your gameplay activity:");
-        lore.add(ChatColor.GRAY + "• Mobs killed (bosses worth more)");
-        lore.add(ChatColor.GRAY + "• Blocks mined (ores worth more)");
-        lore.add(ChatColor.GRAY + "• Distance traveled (exploration)");
-        lore.add(ChatColor.GRAY + "• Time played");
-        lore.add(ChatColor.GRAY + "• Death count (negative impact)");
+        lore.add(ChatColor.YELLOW + "Quick Stats:");
+        lore.add(ChatColor.GRAY + "• Playtime: " + ChatColor.WHITE + 
+            (target.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 3600) + " hours");
+        lore.add(ChatColor.GRAY + "• Mob Kills: " + ChatColor.WHITE + 
+            target.getStatistic(Statistic.MOB_KILLS));
+        lore.add(ChatColor.GRAY + "• Distance: " + ChatColor.WHITE + 
+            (target.getStatistic(Statistic.WALK_ONE_CM) / 100000) + " km");
+        lore.add(ChatColor.GRAY + "• Deaths: " + ChatColor.WHITE + 
+            target.getStatistic(Statistic.DEATHS));
         lore.add("");
         lore.add(ChatColor.YELLOW + "How to improve:");
         lore.add(ChatColor.GREEN + "✓ Fight and defeat boss mobs");
@@ -294,6 +342,8 @@ public class ProgressMenu {
         lore.add(ChatColor.GREEN + "✓ Explore new areas");
         lore.add(ChatColor.GREEN + "✓ Play actively");
         lore.add(ChatColor.GREEN + "✓ Avoid dying");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view detailed statistics!");
         lore.add("");
         
         meta.setLore(lore);
@@ -390,6 +440,8 @@ public class ProgressMenu {
         lore.add(ChatColor.GREEN + "✓ Wear good armor");
         lore.add(ChatColor.GREEN + "✓ Keep backup gear safe");
         lore.add(ChatColor.GREEN + "✓ Avoid risky situations");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "▶ Click to view death details!");
         lore.add("");
         
         meta.setLore(lore);

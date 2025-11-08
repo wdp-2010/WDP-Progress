@@ -3,6 +3,7 @@ package com.wdp.progress.commands;
 import com.wdp.progress.WDPProgressPlugin;
 import com.wdp.progress.data.PlayerData;
 import com.wdp.progress.progress.ProgressCalculator;
+import com.wdp.progress.ui.AdvancementAdminMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,9 +24,11 @@ public class ProgressAdminCommand implements CommandExecutor, TabCompleter {
     
     private final WDPProgressPlugin plugin;
     private final DecimalFormat df = new DecimalFormat("#.##");
+    private final AdvancementAdminMenu advancementMenu;
     
     public ProgressAdminCommand(WDPProgressPlugin plugin) {
         this.plugin = plugin;
+        this.advancementMenu = new AdvancementAdminMenu(plugin);
     }
     
     @Override
@@ -57,6 +60,16 @@ public class ProgressAdminCommand implements CommandExecutor, TabCompleter {
                 
             case "debug":
                 return handleDebug(sender, args);
+                
+            case "advancements":
+            case "adv":
+                return handleAdvancements(sender, args);
+                
+            case "confirm-reset-adv":
+                return handleConfirmResetAdvancements(sender, args);
+                
+            case "confirm-grant-adv":
+                return handleConfirmGrantAdvancements(sender, args);
                 
             default:
                 sender.sendMessage(ChatColor.RED + "Unknown subcommand. Use /progressadmin for help.");
@@ -253,6 +266,99 @@ public class ProgressAdminCommand implements CommandExecutor, TabCompleter {
     }
     
     /**
+     * Handle advancements subcommand - opens the advancement admin menu
+     */
+    private boolean handleAdvancements(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            return true;
+        }
+        
+        Player admin = (Player) sender;
+        
+        if (!admin.isOp()) {
+            sender.sendMessage(ChatColor.RED + "You must be an OP to use the advancement admin menu.");
+            return true;
+        }
+        
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /progressadmin advancements <player>");
+            return true;
+        }
+        
+        Player target = Bukkit.getPlayer(args[1]);
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+            return true;
+        }
+        
+        advancementMenu.openMenu(admin, target);
+        return true;
+    }
+    
+    /**
+     * Confirm reset all advancements
+     */
+    private boolean handleConfirmResetAdvancements(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            return true;
+        }
+        
+        Player admin = (Player) sender;
+        
+        if (!admin.isOp()) {
+            sender.sendMessage(ChatColor.RED + "You must be an OP to use this command.");
+            return true;
+        }
+        
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /progressadmin confirm-reset-adv <player>");
+            return true;
+        }
+        
+        Player target = Bukkit.getPlayer(args[1]);
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+            return true;
+        }
+        
+        advancementMenu.resetAllAdvancements(target, admin);
+        return true;
+    }
+    
+    /**
+     * Confirm grant all advancements
+     */
+    private boolean handleConfirmGrantAdvancements(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            return true;
+        }
+        
+        Player admin = (Player) sender;
+        
+        if (!admin.isOp()) {
+            sender.sendMessage(ChatColor.RED + "You must be an OP to use this command.");
+            return true;
+        }
+        
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /progressadmin confirm-grant-adv <player>");
+            return true;
+        }
+        
+        Player target = Bukkit.getPlayer(args[1]);
+        if (target == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+            return true;
+        }
+        
+        advancementMenu.grantAllAdvancements(target, admin);
+        return true;
+    }
+    
+    /**
      * Send help message
      */
     private void sendHelp(CommandSender sender) {
@@ -264,6 +370,7 @@ public class ProgressAdminCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "/progressadmin set <player> <value>" + ChatColor.GRAY + " - Set progress value");
         sender.sendMessage(ChatColor.YELLOW + "/progressadmin reset <player>" + ChatColor.GRAY + " - Reset player data");
         sender.sendMessage(ChatColor.YELLOW + "/progressadmin debug <player>" + ChatColor.GRAY + " - View debug info");
+        sender.sendMessage(ChatColor.YELLOW + "/progressadmin advancements <player>" + ChatColor.GRAY + " - Manage advancements (OP only)");
         sender.sendMessage("");
         sender.sendMessage(ChatColor.GOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         sender.sendMessage("");
@@ -275,7 +382,7 @@ public class ProgressAdminCommand implements CommandExecutor, TabCompleter {
         
         if (args.length == 1) {
             // Suggest subcommands
-            List<String> subCommands = Arrays.asList("reload", "recalculate", "set", "reset", "debug");
+            List<String> subCommands = Arrays.asList("reload", "recalculate", "set", "reset", "debug", "advancements");
             for (String sub : subCommands) {
                 if (sub.toLowerCase().startsWith(args[0].toLowerCase())) {
                     completions.add(sub);

@@ -240,6 +240,18 @@ Death affects progress in multiple ways:
 - 50% impact (configurable)
 - Vanilla mechanic integrated
 
+### 🆕 v1.2.0: Death Penalty Detail Menu
+
+Click on the **Death Penalties** item in the main progress menu to view:
+- **Total Deaths**: Lifetime death count
+- **Current Penalty**: Active penalty points being deducted
+- **GravesX Status**: Whether GravesX plugin is protecting your items
+- **Active Graves**: Number of graves you can recover items from
+- **How It Works**: Detailed explanation of penalty calculations
+- **Tips**: Advice on reducing death penalties and avoiding deaths
+
+**GravesX Integration**: When GravesX is installed, death penalties are applied more fairly based on actual item loss. If you recover your items from a grave, the penalty is reduced.
+
 ## Practical Examples
 
 ### Example 1: New Player (Progress: 5/100)

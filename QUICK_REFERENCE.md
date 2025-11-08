@@ -1,4 +1,23 @@
-# WDP Progress Quick Reference
+# WDP Progress Quick Reference - v1.2.0
+
+## 🆕 What's New in v1.2.0
+
+### Layered Menu System
+- **5 detailed sub-menus** for deep-dive information
+- **Click categories** in main menu to explore details
+- **Scrollable pagination** (28 items per page)
+- **30+ statistics** now viewable in-game
+- **Full advancement tracking** with completion status
+- **Equipment inspection** with enchantments and values
+
+### Sub-Menu Guide
+1. **Statistics Detail Menu** - 30+ gameplay stats (movement, combat, mining, etc.)
+2. **Advancements Detail Menu** - All Minecraft advancements with progress tracking
+3. **Equipment Detail Menu** - Gear inspection with enchantments, durability, and value
+4. **Economy & Experience Detail Menu** - Wealth tiers, XP levels, milestones
+5. **Death Penalty Detail Menu** - Death tracking, GravesX integration, grave status
+
+---
 
 ## Progress Scale at a Glance
 

@@ -139,6 +139,13 @@ public class PlayerDataManager {
     }
     
     /**
+     * Recalculate progress for a player (convenience method)
+     */
+    public void recalculateProgress(UUID uuid) {
+        forceRecalculate(uuid);
+    }
+    
+    /**
      * Manually set player progress (admin command)
      */
     public boolean setProgress(UUID uuid, double progress) {

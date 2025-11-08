@@ -722,33 +722,19 @@ public class ProgressCalculator {
     }
     
     /**
-     * Calculate death penalty
+     * Calculate death penalty - NOW USES GRAVESX INTEGRATION FOR SMART TRACKING
+     * 
+     * The new system:
+     * - Tracks what items were actually lost in the grave
+     * - Monitors if the player retrieves items from their grave
+     * - Applies penalty only for items NOT recovered
+     * - No longer uses arbitrary death count penalties
      */
     private double calculateDeathPenalty(Player player, PlayerData playerData) {
-        double totalPenalty = 0.0;
-        
-        // Death count penalty
-        int deaths = player.getStatistic(Statistic.DEATHS);
-        double deathPenalty = deaths * config.getDeathPenaltyPerDeath();
-        deathPenalty = Math.min(config.getMaxDeathPenalty(), deathPenalty);
-        totalPenalty += deathPenalty;
-        
-        // Temporary death penalty (if applicable)
-        if (config.isTemporaryPenaltyEnabled()) {
-            long lastDeath = playerData.getLastDeathTime();
-            int recoveryTime = config.getTemporaryPenaltyRecoveryTime();
-            long timeSinceDeath = (System.currentTimeMillis() - lastDeath) / 1000;
-            
-            if (timeSinceDeath < recoveryTime) {
-                double tempPenalty = config.getTemporaryPenaltyAmount();
-                // Linear recovery
-                double recoveryPercent = (double) timeSinceDeath / recoveryTime;
-                tempPenalty *= (1.0 - recoveryPercent);
-                totalPenalty += tempPenalty;
-            }
-        }
-        
-        return totalPenalty;
+        // Death penalty is now handled by GravesX integration
+        // It tracks actual item loss vs recovery, not just death count
+        // See GravesXIntegration.java for the smart tracking logic
+        return playerData.getCurrentDeathPenalty();
     }
     
     /**

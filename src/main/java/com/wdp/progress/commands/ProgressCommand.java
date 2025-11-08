@@ -85,8 +85,9 @@ public class ProgressCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         
-        // Open GUI menu
-        menu.openProgressMenu(viewer, target);
+                
+        // Open the progress menu
+        plugin.getProgressMenu().openProgressMenu(viewer, target);
         
         return true;
     }

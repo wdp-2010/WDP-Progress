@@ -1,9 +1,9 @@
-# WDP Progress - Quick Start Guide
+# WDP Progress - Quick Start Guide - v1.2.0
 
 ## 🚀 Getting Started
 
 ### Installation
-1. Download `WDPProgress-1.1.0.jar`
+1. Download `WDPProgress-1.2.0.jar`
 2. Place in your server's `plugins/` folder
 3. Restart your server
 4. Plugin will auto-configure with SQLite
@@ -22,15 +22,32 @@
 
 **Command:** `/progress` or `/prog`
 
-Opens an **interactive menu** showing:
+Opens an **interactive layered menu** showing:
 - 📊 Your overall progress score (1-100)
 - 🎯 Progress tier (Beginner → Master)
 - 📈 6 category breakdowns
 - 💡 Personalized tips
 - ❓ System explanation
+- 🖱️ **NEW:** Click categories to view detailed sub-menus!
 
 **Hover over items** for detailed information!  
+**Click category items** to open detailed sub-menus.  
 **Click the barrier** to close the menu.
+
+### NEW: Navigable Sub-Menus (v1.2.0)
+
+Each category now has a **detailed sub-menu** with scrollable content:
+
+1. **📖 Advancements** - View all advancements with completion status
+2. **⚔️ Equipment** - Inspect your gear with enchantments and values
+3. **⚡ Statistics** - See 30+ detailed gameplay statistics
+4. **💰 Economy & Experience** - Combined wealth and XP breakdown
+5. **💀 Death Penalty** - Track deaths and GravesX grave status
+
+**Navigation Controls:**
+- **Back Button** - Return to main menu
+- **Previous/Next** - Scroll through pages (28 items per page)
+- **All menus** support automatic pagination
 
 ### Understanding Your Score
 
@@ -251,7 +268,8 @@ A: Yes! WDP Progress provides a full API for other plugins.
 - **API Guide:** `docs/API.md`
 - **Progress Scale:** `docs/PROGRESS_SCALE.md`
 - **GUI Layout:** `GUI_LAYOUT.md`
-- **Update Log:** `UPDATE_LOG_1.1.0.md`
+- **Update Log v1.2.0:** `UPDATE_LOG_1.2.0.md`
+- **Update Log v1.1.0:** `UPDATE_LOG_1.1.0.md`
 
 ---
 
@@ -266,7 +284,7 @@ Still stuck? Review the documentation or contact your server administrator.
 
 ---
 
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Minecraft:** 1.21.6  
 **Java:** 21+
 

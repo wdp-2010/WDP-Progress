@@ -9,6 +9,7 @@ import com.wdp.progress.data.PlayerDataManager;
 import com.wdp.progress.listeners.*;
 import com.wdp.progress.progress.ProgressCalculator;
 import com.wdp.progress.integrations.VaultIntegration;
+import com.wdp.progress.integrations.GravesXIntegration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,8 +45,12 @@ public class WDPProgressPlugin extends JavaPlugin {
     private PlayerDataManager playerDataManager;
     private ProgressCalculator progressCalculator;
     
+    // UI
+    private com.wdp.progress.ui.ProgressMenu progressMenu;
+    
     // Integrations
     private VaultIntegration vaultIntegration;
+    private GravesXIntegration gravesXIntegration;
     
     // API
     private ProgressAPI progressAPI;
@@ -85,6 +90,10 @@ public class WDPProgressPlugin extends JavaPlugin {
             getLogger().info("Initializing progress calculator...");
             progressCalculator = new ProgressCalculator(this);
             
+            // Initialize UI
+            getLogger().info("Initializing progress menu...");
+            progressMenu = new com.wdp.progress.ui.ProgressMenu(this);
+            
             // Initialize Vault integration if available
             if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
                 getLogger().info("Hooking into Vault...");
@@ -96,6 +105,19 @@ public class WDPProgressPlugin extends JavaPlugin {
                 }
             } else {
                 getLogger().warning("Vault not found - economy features disabled");
+            }
+            
+            // Initialize GravesX integration if available
+            if (Bukkit.getPluginManager().getPlugin("GravesX") != null) {
+                getLogger().info("Hooking into GravesX...");
+                gravesXIntegration = new GravesXIntegration(this);
+                if (gravesXIntegration.initialize()) {
+                    getLogger().info("Successfully hooked into GravesX - smart death tracking enabled");
+                } else {
+                    getLogger().warning("GravesX found but integration failed - using basic death tracking");
+                }
+            } else {
+                getLogger().info("GravesX not found - using basic death tracking");
             }
             
             // Register event listeners
@@ -178,7 +200,8 @@ public class WDPProgressPlugin extends JavaPlugin {
         pm.registerEvents(new PlayerDeathListener(this), this);
         pm.registerEvents(new AdvancementListener(this), this);
         pm.registerEvents(new ExperienceListener(this), this);
-        pm.registerEvents(new com.wdp.progress.ui.ProgressMenuListener(), this);
+        pm.registerEvents(new com.wdp.progress.ui.ProgressMenuListener(this), this);
+        pm.registerEvents(new com.wdp.progress.ui.AdvancementAdminMenuListener(this), this);
         pm.registerEvents(new InventoryListener(this), this);
         pm.registerEvents(new StatisticsListener(this), this);
     }
@@ -260,8 +283,16 @@ public class WDPProgressPlugin extends JavaPlugin {
         return progressCalculator;
     }
     
+    public com.wdp.progress.ui.ProgressMenu getProgressMenu() {
+        return progressMenu;
+    }
+    
     public VaultIntegration getVaultIntegration() {
         return vaultIntegration;
+    }
+    
+    public GravesXIntegration getGravesXIntegration() {
+        return gravesXIntegration;
     }
     
     public ProgressAPI getProgressAPI() {
